@@ -66,7 +66,7 @@ detect baleanEngine timed out during initialization:
 Mar 16 18:32:25 9c92dd1 systemd[1]: balena.service: start operation timed out. Terminating.
 ```
 
-[Pattern](https://jel.ly.fish/pattern-container-images-redownloaded-hup-engine-killed-due-timeout-middle-migration-358ef91)
+[Pattern](https://jel.ly.fish/pattern-container-images-redownloaded-hup-engine-killed-due-timeout-middle-migration-358ef91).
 
 **Symptom 3.** From `find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v`
 we find out that we HUPped recently. (I think we can ignore this one because
@@ -78,3 +78,112 @@ than v2.98.4 (because at that version we fixed this problem).
 **Diagnosed problem.** The device tried to migrate the Engine storage from aufs
 to overlay2, but the migration took more than the initialization time out, so
 Systemd killed the Engine during the migration. Fixed in balenaOS v2.98.4.
+
+## Corrupted filesystem / broken SD card
+
+We have a number of patterns related with SD card issues and some more about
+filesystem corruption. However, I could not find a single one showing logs or
+any other symptom we could look at in the diagnostics.
+
+I thus got the symptoms below from a quick web search for "dmesg corrupted sd
+card".
+
+**Symptom 1.** From `dmesg`, we get this I/O error:
+
+```text
+[37716.939131] print_req_error: I/O error, dev sda, sector 4780104
+```
+
+**Symptom 2.** From `dmesg`, we get this I/O error:
+
+```text
+[37716.939136] Buffer I/O error on dev sda2, logical block 571657, async page read
+```
+
+**Diagnosed problem.** The more of the symptoms above we have, the more likely
+it is that the device has a failing storage device. This would be "more true" if
+we could guaranteed that all messages refer to the same device (`sda`, in the
+example).
+
+**For the future.** [This
+pattern](https://jel.ly.fish/pattern-faulty-or-slow-sd-cards-causing-problems-b62c3dcf-bd2e-4852-bc9a-6d0b26b25054)
+has some ideas of what we could do to check for SD issues.
+
+## HUP fails, status shown as stuck at 50%
+
+I don't understand the problem well enough to describe it and its diagnostic
+nicely here, but here's what we got.
+
+**Symptom 1.** We see this on the Host OS update logs
+(`find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v`):
+
+```text
+[000002865][LOG]Image type balena_registry, location 'registry2.balena-cloud.com/v2/aaf9630084a1b2c424f2aa3f717ceabf@sha256:1a66fe702672d5d5c9f1678454180a7f9c6556a5d90412446d24a7ced8a0c250' failed or not found, trying another source
+```
+
+[Pattern](https://jel.ly.fish/pattern-network-failure-during-hup-ad569ca).
+
+**Symptom 2.** We detect a connectivity issue somewhere else -- not sure where,
+maybe it appears on the regular error logs
+(`journalctl --no-pager --no-hostname -pwarning -perr -a`):
+
+```text
+test_balena_registry: Could not communicate with registry2.balena-cloud.com for authentication
+```
+
+This second symptom is mentioned on [this
+pattern](https://jel.ly.fish/pattern-host-os-update-hup-stuck-50-when-connectivity-unstable-23d662d),
+which also happens to mention the first symptom. So, in a way it refers more to
+the problem as a whole, not to specific symptoms. It is one of the cases in
+which the theoretical "a pattern is a symptom" mantra does not correspond to
+what we do in practice.
+
+**Diagnosed problem.** If these two symptoms are present, it probably means that
+the HUP failed because of a networking issue. Recommendation/workaround is to
+try again, and possibly check the Internet connectivity if it keeps failing.
+
+- - - - -
+*The examples below are "work in progress".*
+- - - - -
+
+## `balena-engine.sock` becomes a directory
+
+[Pattern](https://jel.ly.fish/pattern--cannot-connect-balenaengine-daemon-unix-var-run-balena-engine-sock-balenaengine-daemon-running--d170408)
+
+I think we don't have anything in the diagnostics that allow to identify if
+`balena-engine.sock` has become a directory, so we cannot diagnose this problem
+with much certainty. Anyway, some other symptoms are:
+
+When
+
+```text
+Cannot connect to the balenaEngine daemon at unix:///var/run/balena-engine.sock. Is the balenaEngine daemon running?
+```
+
+## Wrong perception that something is an issue?
+
+I am not digging into [this
+pattern](https://jel.ly.fish/pattern-large-image-size-with-potentially-large-deltas-create-erroneous-user-perception-that-user-devices-aren-t-working-or-aren-t-updating-1861d230-b2db-4801-a8b3-f11617f624fc)
+because I think it is not something we can properly deal with during the hack
+week.
+
+But this brings one interesting **point for the future**: we might also be able
+to "diagnose" cases in which the device is working as expected, but causes the
+wrong impression that it is not. Image a support agent receiving a diagnostic
+like "this device may appear broken/unresponsive/whatever, but it actually doing
+this and that and shall look normal again soon."
+
+## Services drop off balena bridge networks unexpectedly
+
+[This
+one](https://jel.ly.fish/pattern-services-drop-off-balena-bridge0-network-unexpectedly-1d57fb4a-d7d9-40a3-843c-313edf32b13b)
+can be interesting because:
+
+1. Depending on the symptoms we know what is happening (Engine initialization
+   timeout), but in others we don't.
+2. At least one of the symptoms (again, Engine initialization timeout) is shared
+   with a different problem. (In other words, this is a concrete example that
+   the same symptom can point to different problems; we need to look for
+   multiple symptoms to be sure).
+3. It has one tricky symptom (crossing information between `balena inspect` of
+   the containers and the networks).
