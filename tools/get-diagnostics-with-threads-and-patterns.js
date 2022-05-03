@@ -72,7 +72,7 @@ exec = async () => {
     }
     await data.forEach(async element => {
 
-
+        console.log(element)
         // get the support thread for the diagnostics file
         const sthread = await sdk.query({
             type: 'object',
@@ -90,6 +90,7 @@ exec = async () => {
 
 
         sthread.forEach(async element => {
+            console.log(element)
             // get all patterns for a support thread
             const patternForSThread = await sdk.query({
                 "description": "Fetch all contracts linked to pattern-troubleshooting-custom-dt-support-fd7a39e",

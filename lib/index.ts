@@ -1,11 +1,14 @@
-export interface ImplementMe {
-	myFunc(): Promise<string>;
-}
+// export interface ImplementMe {
+// 	myFunc(): Promise<string>;
+// }
 
-const moo = 1;
+// const moo = 1;
 
-export class ImplementClass implements ImplementMe {
-	public async myFunc() {
-		return `I need implementing! ${moo}`;
-	}
-}
+// export class ImplementClass implements ImplementMe {
+// 	public async myFunc() {
+// 		return `I need implementing! ${moo}`;
+// 	}
+// }
+
+import * as parser from './parser';
+parser.run();

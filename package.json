@@ -1,8 +1,8 @@
 {
-  "name": "balena-typescript-skeleton",
-  "version": "2.1.0",
-  "description": "Skeleton template for a balena TypeScript project",
-  "homepage": "https://github.com/balena-io/balena-typescript-skeleton#readme",
+  "name": "diagnostics-to-pattern-parser",
+  "version": "0.1.0",
+  "description": "Transformer that converts a diagnostics json into a pattern json. Takes a diagnostics and pattern catalog as inptu",
+  "homepage": "https://github.com/balena-io-playground/diagnostics-json-to-patterns-json#readme",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "keywords": [
@@ -13,10 +13,10 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/balena-io/balena-typescript-skeleton.git"
+    "url": "git+https://github.com/balena-io-playground/diagnostics-json-to-patterns-json.git"
   },
   "bugs": {
-    "url": "https://github.com/balena-io/balena-typescript-skeleton/issues"
+    "url": "https://github.com/balena-io-playground/diagnostics-json-to-patterns-json/issues"
   },
   "files": [
     "build/"
@@ -28,12 +28,15 @@
     "lint-fix": "balena-lint --typescript --fix lib tests",
     "test:node": "mocha -r ts-node/register --reporter spec tests/**/*.spec.ts",
     "test:browser": "karma start",
+    "run:local" : "ts-node lib/index.ts",
     "test": "npm run build && npm run lint && npm run test:node && npm run test:browser",
     "test:fast": "npm run build && npm run test:node",
     "prepack": "npm run build"
   },
   "devDependencies": {
     "@balena/jellyfish-client-sdk": "^10.3.8",
+    "@balena/jellyfish-jellyscript": "^7.0.9",
+    "@balena/jellyfish-types": "^2.0.5",
     "@balena/lint": "^5.4.2",
     "@types/chai": "^4.2.18",
     "@types/chai-as-promised": "^7.1.4",
@@ -46,7 +49,10 @@
     "lint-staged": "^11.0.0",
     "mocha": "^8.4.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "json-schema": "^0.4.0"
   }
 }
