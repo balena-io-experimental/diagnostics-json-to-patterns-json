@@ -1,3 +1,15 @@
+<div align="center">
+
+  <img width="200" height="auto" src="logo.svg">
+  <br>
+  Part of the Sherlock Initiative
+</div>
+
+
+
+
+
+
 # Skeleton Project
 
 This is a skeleton template for a TypeScript library project, containing all the default files and settings required for a balena project.
