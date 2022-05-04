@@ -68,6 +68,9 @@ export class Parser {
 		if (this.symptomsCatalog === undefined) {
 			throw Error(`No symptoms loaded, load first`);
 		}
+		if (!fs.existsSync(outputDestination)) {
+			fs.mkdirSync(outputDestination);
+		}
 
 		for (const [diagFileName, structuredDiagnose] of Object.entries(
 			this.diagnostics,

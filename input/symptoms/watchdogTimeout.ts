@@ -8,11 +8,14 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 export default {
 	type: 'object',
 	properties: {
+		permalinkPattern: {
+			$$formula:
+				"'https://jel.ly.fish/pattern-systemd-watchdog-kills-balenaengine-extended-heavy-load-6min--33f2d65'",
+		},
 		watchdogTimeout: {
 			description: 'Engine killed by the watchdog',
-			pattern: 'https://jel.ly.fish/pattern-systemd-watchdog-kills-balenaengine-extended-heavy-load-6min--33f2d65',
 			$$formula:
 				"/balena.service: Watchdog timeout/.test(contract['journalctl --no-pager --no-hostname -n 1000 -at balenad'])",
-		}
+		},
 	},
 } as JsonSchema;

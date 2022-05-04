@@ -3,6 +3,9 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 export default {
 	type: 'object',
 	properties: {
+		permalinkPattern: {
+			$$formula: "'https://jel.ly.fish/<permalink>'",
+		},
 		deltaFailedAndEngineECONNREFUSED: {
 			allOf: [
 				{
