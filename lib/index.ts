@@ -1,14 +1,11 @@
-// export interface ImplementMe {
-// 	myFunc(): Promise<string>;
-// }
+import { Parser } from './parser';
 
-// const moo = 1;
+const diagnosticsParser = new Parser();
 
-// export class ImplementClass implements ImplementMe {
-// 	public async myFunc() {
-// 		return `I need implementing! ${moo}`;
-// 	}
-// }
+const exec = async () => {
+	await diagnosticsParser.loadDiagnostics('input/diagnostics');
+	await diagnosticsParser.loadSymptoms('input/symptoms');
+	diagnosticsParser.run();
+};
 
-import * as parser from './parser';
-parser.run();
+exec();
