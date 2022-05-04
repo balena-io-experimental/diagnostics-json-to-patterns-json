@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Jellyscript } from '@balena/jellyfish-jellyscript';
 import { JsonSchema } from '@balena/jellyfish-types';
+import { compare, CompareOperator } from 'compare-versions';
 
 type Catalog = { [key: string]: any };
 export class Parser {
@@ -11,7 +12,14 @@ export class Parser {
 	symptomsCatalog: { [key: string]: JsonSchema } | undefined = undefined;
 
 	constructor() {
-		this.parser = new Jellyscript();
+		const options = {
+			formulas: {
+				// https://github.com/omichelsen/compare-versions#human-readable-compare
+				SEMVERCOMP: (ver1: string, ver2: string, operator: CompareOperator) =>
+					compare(ver1, ver2, operator),
+			},
+		};
+		this.parser = new Jellyscript(options);
 	}
 
 	private async readPathToFileNames(inputPath: string): Promise<string[]> {

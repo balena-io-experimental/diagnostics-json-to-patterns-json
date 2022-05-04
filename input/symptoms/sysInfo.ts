@@ -18,5 +18,10 @@ export default {
 			$$formula:
 				"REGEXEXTRACT(contract['cat /etc/os-release'].stdout, 'balenaOS ([0-9]+.[0-9]+.[0-9]+.rev[0-9]+)')",
 		},
+
+		checkBalenaOsVersionTemplate: {
+			$$formula:
+				"SEMVERCOMP(REGEXEXTRACT(contract['cat /etc/os-release'].stdout, 'balenaOS ([0-9]+.[0-9]+.[0-9]+.rev[0-9]+)'), '2.86.16+rev1', '<=')",
+		},
 	},
 } as JsonSchema;
