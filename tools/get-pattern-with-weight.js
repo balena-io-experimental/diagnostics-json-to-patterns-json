@@ -30,7 +30,8 @@ exec = async () => {
                         properties: {
                             weight: {
                                 type: 'number',
-                                "minimum": 10,
+                                "minimum": 5,
+                                "maximum": 8,
                             },
                         },
                     }
@@ -45,7 +46,7 @@ exec = async () => {
         },
     };
 
-    data = await sdk.query(supportThreadQuery);
+    data = await sdk.query(supportThreadQuery, {limit:20});
 
     console.log(data)
 

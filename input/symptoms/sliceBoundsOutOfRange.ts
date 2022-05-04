@@ -8,30 +8,32 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 export default {
 	type: 'object',
 	properties: {
+		permalinkPattern: {
+			$$formula:
+				"'https://jel.ly.fish/pattern-balenad-panic-runtime-error-slice-bounds-range-1770803200--581d706'",
+		},
 		sliceBoundOutOfRange: {
-			description: 'known bug caused by an integer overflow while applying deltas',
+			description:
+				'known bug caused by an integer overflow while applying deltas',
 			$$formula:
 				"/panic: runtime error: slice bounds out of range/.test(contract['journalctl --no-pager --no-hostname -n 1000 -at balenad'])",
 		},
-		
-		
 		deviceIs32Bit: {
 			allOf: [
 				{
-				not:{
-					description: 'Device is 32 bit',
-			$$formula:
-				"/aarch64/.test(contract['uname -a'])",
-				}},
-				
+					not: {
+						description: 'Device is 32 bit',
+						$$formula: "/aarch64/.test(contract['uname -a'])",
+					},
+				},
+
 				{
-				not:{
-					description: 'Device is 32 bit',
-			$$formula:
-				"/_64/.test(contract['uname -a'])",
-				}},
+					not: {
+						description: 'Device is 32 bit',
+						$$formula: "/_64/.test(contract['uname -a'])",
+					},
+				},
 			],
 		},
-		
 	},
 } as JsonSchema;

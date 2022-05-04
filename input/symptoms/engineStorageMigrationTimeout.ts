@@ -3,6 +3,10 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 export default {
 	type: 'object',
 	properties: {
+		permalinkPattern: {
+			$$formula:
+				"'https://jel.ly.fish/pattern-container-images-redownloaded-hup-engine-killed-due-timeout-middle-migration-358ef91'",
+		},
 		recentStorageMigration: {
 			allOf: [
 				{
@@ -19,6 +23,5 @@ export default {
 				},
 			],
 		},
-		
 	},
 } as JsonSchema;
