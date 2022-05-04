@@ -41,8 +41,12 @@ Each pattern has a list of matchers that are run over an input. This input is a 
 The matcher file per pattern needs to follow the JSONSchema. `@balena/jellyfish-types`
 
 
+# input folder
+In the input folder two subfolders are expected: `diagnostics` and `symptoms`:
+`symptoms`: Contains all symptom files in JsonSchema format to be feed into Jellyscript parser
+`diagnostics`: Contains all structured files that should be evaluated wiht the jellyscript parser
 
-
-
+# output folder
+In the output folder there will be result files for each diagnostics file feed as input.
 
 

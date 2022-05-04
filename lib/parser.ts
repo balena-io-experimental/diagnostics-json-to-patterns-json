@@ -2,10 +2,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Jellyscript } from '@balena/jellyfish-jellyscript';
 import { JsonSchema } from '@balena/jellyfish-types';
+
+type Catalog = { [key: string]: any };
 export class Parser {
 	contract: any;
 	parser: Jellyscript;
-	diagnostics: { [key: string]: any } | undefined = undefined;
+	diagnostics: Catalog | undefined = undefined;
 	symptomsCatalog: { [key: string]: JsonSchema } | undefined = undefined;
 
 	constructor() {
@@ -22,10 +24,8 @@ export class Parser {
 		}
 	}
 
-	private async loadCatalogFromFiles(
-		fileNames: string[],
-	): Promise<{ [key: string]: any }> {
-		const catalog: { [key: string]: any } = {};
+	private async loadCatalogFromFiles(fileNames: string[]): Promise<Catalog> {
+		const catalog: Catalog = {};
 
 		await Promise.all(
 			fileNames.map(async (filename) => {
@@ -47,6 +47,10 @@ export class Parser {
 		return catalog;
 	}
 
+	private async writeResults(results: string, fileDestPath: string) {
+		await fs.writeFileSync(fileDestPath, results);
+	}
+
 	async loadSymptoms(symptomsPath: string) {
 		const fileNames = await this.readPathToFileNames(symptomsPath);
 		this.symptomsCatalog = await this.loadCatalogFromFiles(fileNames);
@@ -57,7 +61,7 @@ export class Parser {
 		this.diagnostics = await this.loadCatalogFromFiles(fileNames);
 	}
 
-	run() {
+	async run(outputDestination: string) {
 		if (this.diagnostics === undefined) {
 			throw Error(`No diagnostics loaded, load first`);
 		}
@@ -65,17 +69,24 @@ export class Parser {
 			throw Error(`No symptoms loaded, load first`);
 		}
 
-		for (const [symptomName, symptom] of Object.entries(this.symptomsCatalog)) {
-			console.log(`${symptomName}`);
-			for (const [diagFileName, structuredDiagnose] of Object.entries(
-				this.diagnostics,
+		let results: Catalog = {};
+		for (const [diagFileName, structuredDiagnose] of Object.entries(
+			this.diagnostics,
+		)) {
+			results[diagFileName] = { input: structuredDiagnose };
+			for (const [symptomName, symptom] of Object.entries(
+				this.symptomsCatalog,
 			)) {
-				console.log(`${diagFileName}`);
-				const result = this.parser.evaluateObject(symptom, structuredDiagnose);
-				console.log(
-					`${diagFileName}, ${JSON.stringify(result.default, null, 2)}`,
-				);
+				results[diagFileName][symptomName] = this.parser.evaluateObject(
+					symptom,
+					structuredDiagnose,
+				).default;
 			}
+			await this.writeResults(
+				JSON.stringify(results, null, 2),
+				outputDestination + diagFileName + '.json',
+			);
+			results = {};
 		}
 	}
 }
