@@ -35,7 +35,7 @@ export class Parser {
 					case '.json':
 					case '.ts':
 					case '.js':
-						catalog[name] = require(filePath);
+						catalog[name + fileExtension] = require(filePath);
 						break;
 					default:
 						console.error(
@@ -69,22 +69,25 @@ export class Parser {
 			throw Error(`No symptoms loaded, load first`);
 		}
 
-		let results: Catalog = {};
 		for (const [diagFileName, structuredDiagnose] of Object.entries(
 			this.diagnostics,
 		)) {
-			results[diagFileName] = { input: structuredDiagnose };
+			let results: Catalog = {
+				inputFileName: diagFileName,
+				input: structuredDiagnose,
+			};
 			for (const [symptomName, symptom] of Object.entries(
 				this.symptomsCatalog,
 			)) {
-				results[diagFileName][symptomName] = this.parser.evaluateObject(
+				results[symptomName] = this.parser.evaluateObject(
 					symptom,
 					structuredDiagnose,
 				).default;
+				delete structuredDiagnose.default;
 			}
 			await this.writeResults(
 				JSON.stringify(results, null, 2),
-				outputDestination + diagFileName + '.json',
+				outputDestination + 'out_' + diagFileName,
 			);
 			results = {};
 		}
