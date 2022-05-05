@@ -10,6 +10,7 @@ export class Parser {
 	parser: Jellyscript;
 	diagnostics: Catalog | undefined = undefined;
 	symptomsCatalog: { [key: string]: JsonSchema } | undefined = undefined;
+	results: { [key: string]: Catalog } | undefined = undefined;
 
 	constructor() {
 		const options = {
@@ -41,9 +42,11 @@ export class Parser {
 				const { name, ext: fileExtension } = path.parse(filename);
 				switch (fileExtension) {
 					case '.json':
+						catalog[name + fileExtension] = require(filePath);
+						break;
 					case '.ts':
 					case '.js':
-						catalog[name + fileExtension] = require(filePath);
+						catalog[name + fileExtension] = require(filePath).default;
 						break;
 					default:
 						console.error(
@@ -55,8 +58,39 @@ export class Parser {
 		return catalog;
 	}
 
-	private async writeResults(results: string, fileDestPath: string) {
-		await fs.writeFileSync(fileDestPath, results);
+	private addSymptomDetailIntoResults() {
+		if (this.results === undefined) {
+			throw Error(`No results generated, run parser first`);
+		}
+		if (this.symptomsCatalog === undefined) {
+			throw Error(`No symptoms loaded, load first`);
+		}
+
+		for (const diagFileName of Object.keys(this.results)) {
+			const diagFileResults = this.results[diagFileName].results;
+
+			for (const [key, value] of Object.entries(this.symptomsCatalog)) {
+				if (typeof value === 'object') {
+					diagFileResults[key].title = value.title;
+					diagFileResults[key].description = value.description;
+
+					if (value.properties) {
+						diagFileResults[key]['permalinkPattern'] =
+							value.properties['permalinkPattern'];
+						for (const [singleSymptomKey, singleSymptomValue] of Object.entries(
+							value.properties,
+						)) {
+							if (typeof singleSymptomValue === 'object') {
+								diagFileResults[key][singleSymptomKey] = {
+									value: diagFileResults[key][singleSymptomKey],
+									description: singleSymptomValue.description,
+								};
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	async loadSymptoms(symptomsPath: string) {
@@ -69,38 +103,49 @@ export class Parser {
 		this.diagnostics = await this.loadCatalogFromFiles(fileNames);
 	}
 
-	async run(outputDestination: string) {
+	async writeResultsToFile(outputDestination: string) {
+		if (this.results === undefined) {
+			throw Error(`No results generated, run parser first`);
+		}
+		if (!fs.existsSync(outputDestination)) {
+			fs.mkdirSync(outputDestination);
+		}
+
+		for await (const diagFileName of Object.keys(this.results)) {
+			await fs.writeFileSync(
+				outputDestination + 'out_' + diagFileName,
+				JSON.stringify(this.results[diagFileName], null, 2),
+			);
+		}
+	}
+
+	async run() {
 		if (this.diagnostics === undefined) {
 			throw Error(`No diagnostics loaded, load first`);
 		}
 		if (this.symptomsCatalog === undefined) {
 			throw Error(`No symptoms loaded, load first`);
 		}
-		if (!fs.existsSync(outputDestination)) {
-			fs.mkdirSync(outputDestination);
-		}
 
+		this.results = {};
 		for (const [diagFileName, structuredDiagnose] of Object.entries(
 			this.diagnostics,
 		)) {
-			let results: Catalog = {
+			this.results[diagFileName] = {
 				inputFileName: diagFileName,
 				input: structuredDiagnose,
 			};
-			for (const [symptomName, symptom] of Object.entries(
+			const res = this.parser.evaluateObject(
 				this.symptomsCatalog,
-			)) {
-				results[symptomName] = this.parser.evaluateObject(
-					symptom,
-					structuredDiagnose,
-				).default;
-				delete structuredDiagnose.default;
-			}
-			await this.writeResults(
-				JSON.stringify(results, null, 2),
-				outputDestination + 'out_' + diagFileName,
+				structuredDiagnose,
 			);
-			results = {};
+			res['results'] = {};
+			for (const key of Object.keys(this.symptomsCatalog)) {
+				res['results'][key] = res[key];
+				delete res[key];
+			}
+			this.results[diagFileName] = res;
 		}
+		this.addSymptomDetailIntoResults();
 	}
 }
