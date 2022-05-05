@@ -15,7 +15,7 @@ export default {
 		rescheduleUpdateNetworkIsAmbiguous: {
 			description: 'Schedule Update network is ambiguous',
 			$$formula:
-				"/Scheduling another update .* network .* is ambiguous/.test(contract['balena logs {id}'])",
+				"/Scheduling another update .* network .* is ambiguous/.test(contract['balena logs {id}'].stdout)",
 		},
 	},
 } as JsonSchema;

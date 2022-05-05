@@ -15,7 +15,7 @@ export default {
 		watchdogTimeout: {
 			description: 'Engine killed by the watchdog',
 			$$formula:
-				"/balena.service: Watchdog timeout/.test(contract['journalctl --no-pager --no-hostname -n 1000 -at balenad'])",
+				"/balena.service: Watchdog timeout/.test(contract['journalctl --no-pager --no-hostname -n 1000 -at balenad'].stdout)",
 		},
 	},
 } as JsonSchema;

@@ -16,12 +16,12 @@ export default {
 			description:
 				'Image type balena_registry, location {url} failed or not found',
 			$$formula:
-				"/Image type balena_registry, location.*failed or not found, trying another source/.test(contract['find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v'])",
+				"/Image type balena_registry, location.*failed or not found, trying another source/.test(contract['find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v'].stdout)",
 		},
 		allHostappUpdateFailed: {
 			description: 'all hostapp-update attempts have failed...',
 			$$formula:
-				"/all hostapp-update attempts have failed.../.test(contract['find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v'])",
+				"/all hostapp-update attempts have failed.../.test(contract['find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v'].stdout)",
 		},
 	},
 } as JsonSchema;

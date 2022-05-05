@@ -16,21 +16,21 @@ export default {
 			description:
 				'known bug caused by an integer overflow while applying deltas',
 			$$formula:
-				"/panic: runtime error: slice bounds out of range/.test(contract['journalctl --no-pager --no-hostname -n 1000 -at balenad'])",
+				"/panic: runtime error: slice bounds out of range/.test(contract['journalctl --no-pager --no-hostname -n 1000 -at balenad'].stdout)",
 		},
 		deviceIs32Bit: {
 			allOf: [
 				{
 					not: {
 						description: 'Device is 32 bit',
-						$$formula: "/aarch64/.test(contract['uname -a'])",
+						$$formula: "/aarch64/.test(contract['uname -a'].stdout)",
 					},
 				},
 
 				{
 					not: {
 						description: 'Device is 32 bit',
-						$$formula: "/_64/.test(contract['uname -a'])",
+						$$formula: "/_64/.test(contract['uname -a'].stdout)",
 					},
 				},
 			],

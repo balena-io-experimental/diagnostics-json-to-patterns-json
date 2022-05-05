@@ -15,12 +15,12 @@ export default {
 		hupDeviceCantReachAPI: {
 			description: "device can't reach our API for downloading the delta",
 			$$formula:
-				"/failed or not found, trying another source Which means the device can't reach our API for downloading the delta/.test(contract['find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v'])",
+				"/failed or not found, trying another source Which means the device can't reach our API for downloading the delta/.test(contract['find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v'].stdout)",
 		},
 		balenaRegistryComAuthError: {
 			description: 'Could not communicate with * for authentication',
 			$$formula:
-				"/test_balena_registry: Could not communicate with .* for authentication/.test(contract['journalctl --no-pager --no-hostname -pwarning -perr -a'])",
+				"/test_balena_registry: Could not communicate with .* for authentication/.test(contract['journalctl --no-pager --no-hostname -pwarning -perr -a'].stdout)",
 		},
 	},
 } as JsonSchema;
