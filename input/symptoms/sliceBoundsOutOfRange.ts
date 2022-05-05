@@ -19,19 +19,15 @@ export default {
 				"/panic: runtime error: slice bounds out of range/.test(contract['journalctl --no-pager --no-hostname -n 1000 -at balenad'].stdout)",
 		},
 		deviceIs32Bit: {
-			allOf: [
+			anyOf: [
 				{
-					not: {
-						description: 'Device is 32 bit',
-						$$formula: "/aarch64/.test(contract['uname -a'].stdout)",
-					},
+					description: 'Device is 32 bit',
+					$$formula: "!/aarch64/.test(contract['uname -a'].stdout)",
 				},
 
 				{
-					not: {
-						description: 'Device is 32 bit',
-						$$formula: "/_64/.test(contract['uname -a'].stdout)",
-					},
+					description: 'Device is 32 bit',
+					$$formula: "!/_64/.test(contract['uname -a'].stdout)",
 				},
 			],
 		},

@@ -8,20 +8,19 @@ export default {
 		permalinkPattern:
 			'https://jel.ly.fish/pattern-container-images-redownloaded-hup-engine-killed-due-timeout-middle-migration-358ef91',
 		recentStorageMigration: {
-		
 			allOf: [
 				{
-				        description: 'We have recently done a storage migration',
+					description: 'We have recently done a storage migration',
 					$$formula:
 						"/Storage migration from aufs to overlay2 starting/.test(contract['journalctl --no-pager --no-hostname -n 1000 -at balenad'].stdout)",
 				},
 				{
-				        description: 'balenaEngine timed out during initialization',
+					description: 'balenaEngine timed out during initialization',
 					$$formula:
 						"/balena.service: start operation timed out/.test(contract['journalctl --no-pager --no-hostname -pwarning -perr -a'].stdout)",
 				},
 				{
-				        description: 'OS version is less than v2.98.4',
+					description: 'OS version is less than v2.98.4',
 					$$formula:
 						"SEMVERCOMP(REGEXEXTRACT(contract['cat /etc/os-release'].stdout, 'balenaOS ([0-9]+.[0-9]+.[0-9])'), '2.98.4', '<')",
 				},
