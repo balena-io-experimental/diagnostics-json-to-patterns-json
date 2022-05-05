@@ -7,6 +7,8 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 
 export default {
 	type: 'object',
+	title: 'Slice bounds out of range when applying delta.',
+	description: `This is a known bug caused by an integer overflow while applying deltas. The workaround is to disable deltas.`,
 	properties: {
 		permalinkPattern:
 			'https://jel.ly.fish/pattern-balenad-panic-runtime-error-slice-bounds-range-1770803200--581d706',
