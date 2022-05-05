@@ -7,13 +7,15 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 
 export default {
 	type: 'object',
+	title: 'Network Failure During HUP',
+	description: `HUP probably failed because of a networking issue. Recommendation/workaround is to try again, and possibly check the Internet connectivity if it keeps failing.`,
 	properties: {
 		permalinkPattern:
 			'https://jel.ly.fish/pattern-host-os-update-hup-stuck-50-when-connectivity-unstable-23d662d',
 		hupDeviceCantReachAPI: {
 			description: "device can't reach our API for downloading the delta",
 			$$formula:
-				"/failed or not found, trying another source Which means the device can't reach our API for downloading the delta/.test(contract['find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v'].stdout)",
+				"/failed or not found, trying another source/.test(contract['find /mnt/data/*hup/*log -mtime -180 | xargs tail -n 250 -v'].stdout)",
 		},
 		balenaRegistryComAuthError: {
 			description: 'Could not communicate with * for authentication',
