@@ -8,10 +8,8 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 export default {
 	type: 'object',
 	properties: {
-		permalinkPattern: {
-			$$formula:
-				"'https://jel.ly.fish/pattern-network-failure-during-hup-ad569ca'",
-		},
+		permalinkPattern:
+			'https://jel.ly.fish/pattern-network-failure-during-hup-ad569ca',
 		imageTypeBalenaRegistryFailed: {
 			description:
 				'Image type balena_registry, location {url} failed or not found',

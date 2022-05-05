@@ -2,6 +2,7 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 
 export default {
 	type: 'object',
+	description: 'System information extractor',
 	properties: {
 		extractSupervisorVersion: {
 			description: 'Extracting Supervisor version with a regex',

@@ -8,10 +8,8 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 export default {
 	type: 'object',
 	properties: {
-		permalinkPattern: {
-			$$formula:
-				"'https://jel.ly.fish/pattern-balenad-panic-runtime-error-slice-bounds-range-1770803200--581d706'",
-		},
+		permalinkPattern:
+			'https://jel.ly.fish/pattern-balenad-panic-runtime-error-slice-bounds-range-1770803200--581d706',
 		sliceBoundOutOfRange: {
 			description:
 				'known bug caused by an integer overflow while applying deltas',

@@ -8,10 +8,8 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 export default {
 	type: 'object',
 	properties: {
-		permalinkPattern: {
-			$$formula:
-				"'https://jel.ly.fish/pattern-host-os-update-hup-stuck-50-when-connectivity-unstable-23d662d'",
-		},
+		permalinkPattern:
+			'https://jel.ly.fish/pattern-host-os-update-hup-stuck-50-when-connectivity-unstable-23d662d',
 		hupDeviceCantReachAPI: {
 			description: "device can't reach our API for downloading the delta",
 			$$formula:
