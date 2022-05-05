@@ -22,7 +22,7 @@ export default {
 				{
 					description: 'OS version is less than v2.98.4',
 					$$formula:
-						"SEMVERCOMP(REGEXEXTRACT(contract['cat /etc/os-release'].stdout, 'balenaOS ([0-9]+.[0-9]+.[0-9])'), '2.98.4', '<')",
+						"SEMVERCOMP(REGEXEXTRACT(contract['cat /etc/os-release'].stdout, 'balenaOS ([0-9]+\.[0-9]+\.[0-9])'), '2.98.4', '<')",
 				},
 			],
 		},
