@@ -3,9 +3,7 @@ import type { JsonSchema } from '@balena/jellyfish-types';
 export default {
 	type: 'object',
 	properties: {
-		permalinkPattern: {
-			$$formula: "'https://jel.ly.fish/<permalink>'",
-		},
+		permalinkPattern: 'https://jel.ly.fish/<permalink>',
 		deltaFailedAndEngineECONNREFUSED: {
 			allOf: [
 				{
@@ -33,9 +31,6 @@ export default {
 		engineECONNRESET: {
 			$$formula:
 				"/connect ECONNREFUSED \\/var\\/run\\/balena-engine.sock/.test(contract['journalctl --no-pager --no-hostname -n 200 -a -u balena'].stdout)",
-		},
-		balenaEngineIsBusted: {
-			$$formula: "contract['deltaFailedRegex'] && contract['engineECONNRESET']",
 		},
 	},
 } as JsonSchema;
