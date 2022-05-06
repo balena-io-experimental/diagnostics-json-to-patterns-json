@@ -4,6 +4,7 @@
  */
 
 import type { JsonSchema } from '@balena/jellyfish-types';
+import { toFormula } from '../../lib/helpers';
 
 export default {
 	type: 'object',
@@ -17,8 +18,12 @@ export default {
 			'https://jel.ly.fish/pattern-systemd-watchdog-kills-balenaengine-extended-heavy-load-6min--33f2d65',
 		watchdogTimeout: {
 			description: 'Engine killed by the watchdog',
-			$$formula:
-				"/balena.service: Watchdog timeout/.test(contract['journalctl --no-pager --no-hostname -n 1000 -at balenad'].stdout)",
+			$$formula: toFormula((contract) =>
+				/balena.service: Watchdog timeout/.test(
+					contract['journalctl --no-pager --no-hostname -n 1000 -at balenad']
+						.stdout,
+				),
+			),
 		},
 	},
 } as JsonSchema;
